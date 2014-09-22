@@ -149,10 +149,10 @@ sub report_results {
     }
 
     # Output strings for header and row.
-	#<<< perltidy is not always my friend
-	my $output_header = "%*s  %*s= % .3f  %s";
-	my $output_row    = "%*s= %*d  %+.3f  %s";
-	#>>>
+    #<<< perltidy is not always my friend
+    my $output_header = "%*s  %*s= % .3f  %s";
+    my $output_row    = "%*s= %*d  %+.3f  %s";
+    #>>>
 
     # header
     say sprintf( "\n$output_header",
