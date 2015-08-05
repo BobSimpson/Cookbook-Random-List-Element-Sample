@@ -36,18 +36,53 @@ and do some analysis.
 
 But if you don't, this works pretty well and is fun to explain.
 
-# Copyright 2014 Bob Simpson <bob@pobox.com>
-# 
+======== Program Results
+
+The output of the program shows the results of a series of random
+selections and how far off "true" the random generator is.
+
+The first line shows a summary of the test and the "acceptible" margin
+of error:
+
+# 6 data elements. 50000 sets. 300000 loops. 0.01 margin of error.
+
+While the program is running, it will show progress:
+
+# Working...
+# Data from quarks.txt
+#  30000 ( 10%)
+#  60000 ( 20%)
+# etc.
+
+When the program is complete, the "acceptible" margin is displayed with
+a list of all possible results.
+
+Each row shows a specific result, the total number of times that result
+occured, and how far the actual result is from a mathematically equal
+result.  (Positive for results that exceed expectation, negative for
+results below expectation.)  If margin exceeds the "acceptible" margin,
+that entry displays a marker.
+
+#          Spread=  0.010
+#  bottom=  49573  -0.009
+#   charm=  50361  +0.007
+#    down=  50318  +0.006
+# strange=  49744  -0.005
+#     top=  50009  +0.000
+#      up=  49995  -0.000
+
+# Copyright 2014-2015 Bob Simpson <bob@pobox.com>
+#
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 2 of the License, or (at your
 # option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
