@@ -38,11 +38,18 @@ use English qw( -no_match_vars );
 # Program Options
 #========================================
 
-my %O = (
+my $option = {
     'input' => 'quarks.txt',    # What's our input file?
     'sets'  => 50_000,          # How many sets are we going to do?
-);
-GetOptions( \%O, 'input=s', 'sets=i' );
+};
+
+#<<< tidy off
+GetOptions(
+    $option,
+    'input=s',
+    'sets=i'
+    ) or pod2usage;
+#>>> tidy on
 
 # How far off can the result be from 100% before we apply a visible tag
 # in the output? ( 1 = 1% )
@@ -56,11 +63,11 @@ $spread =
 
 # We need to know how many items we have in the list to make sure we're
 # getting the right number of each in the results.
-my $data = count_data( { file => $O{input} } );
+my $data = count_data( { file => $option{input} } );
 
 # We'll multiply the number of sets by the number of elements so we
 # don't get weird fractions that might skew the results.
-my $loops = $O{sets} * $data;
+my $loops = $option{sets} * $data;
 
 #========================================
 # Main body of work
@@ -69,19 +76,19 @@ my $loops = $O{sets} * $data;
 # Tell the user what we're doing.
 say $data    ## no critic (RequireBracedFileHandleWithPrint)
   . ' data elements.'
-  . " $O{sets} sets."
+  . " $option{sets} sets."
   . " $loops loops."
   . " $spread margin of error.";
 
 say "\nWorking...";
-say "Data from $O{input}";
+say "Data from $option{input}";
 
 # Keep track of our results for reporting.
 my $result;
 
 # For each loop get one random item.
 foreach my $loop ( 1 .. $loops ) {
-    my $item = generate( { file => $O{input} } );
+    my $item = generate( { file => $option{input} } );
     $result->{$item}->{count}++;
 
     # Report progress every now and then.
@@ -173,7 +180,7 @@ sub report_results {
         my $count = $results->{$item}->{count};
 
         # How close are we to 100% perfect?
-        my $rate = $count / $O{sets} - 1;
+        my $rate = $count / $option{sets} - 1;
 
         # Add a tag if we're out of bounds
         my $bad = q{};    # Needs a default
