@@ -4,33 +4,32 @@ http://docstore.mik.ua/orelly/perl/cookbook/ch08_07.htm
 The explanation there is pretty good, but the "code" they show doesn't
 actually work.
 
-So...
+So, where would you use this, and what does the process look like?
 
 Assuming you don't want to load the whole data set into memory, this lets
 you go through the list one item at a time and determine if "this one"
-is the "right answer" if this is the last item in the list, thus:
+is the "right answer" once you reach the last item in the list, thus:
 
-Item #1. There is a 100% chance (1/1) this item will be selected, if
-this is the last item in the list. Put it in your pocket.
+Item #1. There is a 100% chance (1/1) this item will be selected, so
+hang on to it.
 
-Item #2. There is a 50% chance (1/2) this item will be selected, if
-this is the last item in the list.  Generate a random number, and if
-it's less than 1/2, put this item in your pocket instead.
+Item #2. There is a 50% chance (1/2) this item will be selected.  Generate
+a random number, and if it's less than 1/2, hang on to this item instead.
 
-Item #3. There is a 33.3% chance (1/3) this item will be selected, if
-this is the last item in the list.  Generate a random number, and if
-it's less than 1/3, put this item in your pocket instead.
+Item #3. There is a 33.3% chance (1/3) this item will be selected.
+Generate a random number, and if it's less than 1/3, hang on to this
+item instead.
 
 ...later...
 
-Item #3,839,113. There is a (1/3839113) chance this item will be selected,
-if this is the last item in the list.  Generate a random number, and if
-it's less than 1/3839113, put this item in your pocket instead.
+Item #3,839,113. There is a (1/3839113) chance this item will be selected.
+Generate a random number, and if it's less than 1/3839113, hang on to
+this item instead.
 
 At some point you will reach the end of the list and return the last
 item you put in your pocket as the selected item.
 
-There are faster ways to select an item from a set where you have more
+There are faster ways to select a random item where you have more
 information about the data set or can pull the whole thing into memory
 and do some analysis.
 
@@ -38,10 +37,12 @@ But if you don't, this works pretty well and is fun to explain.
 
 ======== Program Results
 
-The output of the program shows the results of a series of random
-selections and how far off "true" the random generator is.
+The program can be run as-is.
 
-The first line shows a summary of the test and the "acceptible" margin
+The output is the results of a series of random selections and how far
+off "true" the random generator is.
+
+The first line shows a summary of the test and the acceptible margin
 of error:
 
 # 6 data elements. 50000 sets. 300000 loops. 0.01 margin of error.
@@ -54,14 +55,14 @@ While the program is running, it will show progress:
 #  60000 ( 20%)
 # etc.
 
-When the program is complete, the "acceptible" margin is displayed with
-a list of all possible results.
+When the program is complete, the acceptible margin is displayed (as
+the Spread) with a list of all possible results.
 
-Each row shows a specific result, the total number of times that result
-occured, and how far the actual result is from a mathematically equal
-result.  (Positive for results that exceed expectation, negative for
-results below expectation.)  If margin exceeds the "acceptible" margin,
-that entry displays a marker.
+Each row shows a specific result from the data set, the total number
+of times that result occured, and how far the actual result is from
+a mathematically expected result.  (Positive for results that exceed
+expectation, negative for results below expectation.)  If margin exceeds
+the "acceptible" margin, that entry displays a marker.
 
 #          Spread=  0.010
 #  bottom=  49573  -0.009
@@ -71,7 +72,7 @@ that entry displays a marker.
 #     top=  50009  +0.000
 #      up=  49995  -0.000
 
-# Copyright 2014-2015 Bob Simpson <bob@pobox.com>
+# Copyright 2014-2018 Bob Simpson <bob@pobox.com>
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the

@@ -5,57 +5,36 @@ use strict;
 use warnings;
 
 use feature qw(say);
-use version; our $VERSION = qv('1.0.0');    # Because perlcritic insists
+use version; our $VERSION = qv('1.0.1');    # Because perlcritic insists
 
 # modules
-use Getopt::Long;
 use English qw( -no_match_vars );
-
-# This program will examine a list of data elements, one at a time and,
-# using an algorithm from the Perl Cookbook, determine if that item should
-# be returned as the selected item.
-#
-# Take a look at the generate subroutine for the implementation and the README
-# for more explanation.
-
-# Copyright 2014 Bob Simpson <bob@pobox.com>
-#
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2 of the License, or (at your
-# option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+use Getopt::Long;
+use Pod::Usage qw( pod2usage );
 
 #========================================
 # Program Options
 #========================================
 
 my $option = {
-    'input' => 'quarks.txt',    # What's our input file?
-    'sets'  => 50_000,          # How many sets are we going to do?
+    input => 'quarks.txt',    # What's our input file?
+    sets  => 50_000,          # How many sets are we going to do?
 };
 
 #<<< tidy off
 GetOptions(
     $option,
+    'help',
     'input=s',
     'sets=i'
-    ) or pod2usage;
+) or pod2usage();
 #>>> tidy on
+if ( $option->{help} ) { pod2usage(1) }
 
 # How far off can the result be from 100% before we apply a visible tag
 # in the output? ( 1 = 1% )
 my $spread = 1;
-$spread =
-  $spread / 100;    ## no critic (ValuesAndExpressions::ProhibitMagicNumbers)
+$spread = $spread / 100;    ## no critic (ValuesAndExpressions::ProhibitMagicNumbers)
 
 #========================================
 # Setup
@@ -63,32 +42,34 @@ $spread =
 
 # We need to know how many items we have in the list to make sure we're
 # getting the right number of each in the results.
-my $data = count_data( { file => $option{input} } );
+my $data = count_data( { file => $option->{input} } );
 
 # We'll multiply the number of sets by the number of elements so we
 # don't get weird fractions that might skew the results.
-my $loops = $option{sets} * $data;
+my $loops = $option->{sets} * $data;
 
 #========================================
 # Main body of work
 #========================================
 
 # Tell the user what we're doing.
-say $data    ## no critic (RequireBracedFileHandleWithPrint)
+#<<< tidy off
+say $data ## no critic (RequireBracedFileHandleWithPrint)
   . ' data elements.'
-  . " $option{sets} sets."
+  . " $option->{sets} sets."
   . " $loops loops."
   . " $spread margin of error.";
+#>>> tidy on
 
-say "\nWorking...";
-say "Data from $option{input}";
+say "\n", 'Working...';
+say "Data from $option->{input}";
 
 # Keep track of our results for reporting.
 my $result;
 
 # For each loop get one random item.
 foreach my $loop ( 1 .. $loops ) {
-    my $item = generate( { file => $option{input} } );
+    my $item = generate( { file => $option->{input} } );
     $result->{$item}->{count}++;
 
     # Report progress every now and then.
@@ -172,24 +153,95 @@ sub report_results {
     #>>>
 
     # header
-    say sprintf "\n$output_header",
-      $width_item, q{}, $width_count, $header, $spread, q{};
+    say sprintf "\n$output_header", $width_item, q{}, $width_count, $header, $spread, q{};
 
     # rows
     foreach my $item ( sort keys %{$results} ) {
         my $count = $results->{$item}->{count};
 
         # How close are we to 100% perfect?
-        my $rate = $count / $option{sets} - 1;
+        my $rate = $count / $option->{sets} - 1;
 
         # Add a tag if we're out of bounds
         my $bad = q{};    # Needs a default
         if ( abs $rate > $spread ) { $bad = ' <<<'; }
 
         # Output
-        say sprintf $output_row,
-          $width_item, $item, $width_count, $count, $rate, $bad;
+        say sprintf $output_row, $width_item, $item, $width_count, $count, $rate, $bad;
 
     }
     return;
 }
+
+## no critic (RequirePodSections)
+
+__END__
+
+=pod
+
+=head1 NAME
+
+random_from_list.pl -- report on regularity of random selections
+
+=head1 USAGE
+
+random_from_list.pl
+[--input=I<filename>]
+[--sets=I<int>]
+
+=head1 DESCRIPTION
+
+This program will examine a list of data elements one at a time and,
+using an algorithm from the Perl Cookbook, determine if that item should
+be returned as the selected item.
+
+Take a look at the generate subroutine for the implementation and the
+README for more explanation.
+
+=head1 REQUIRED ARGUMENTS
+
+None.
+A default data set is supplied with the program.
+
+=head1 OPTIONS
+
+=over
+
+=item --input
+
+The name of a file that contains a list of items to randomize.
+Default: quarks.txt
+
+=item --sets
+
+The number of times to pick a random item from the list.
+Default: 50,000
+
+The total number of items generated is the count of the items in the list (6 in quark.txt)
+times the number of sets.
+
+=back
+
+=head1 AUTHOR
+
+Bob Simpson <bob@pobox.com>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2014-2018 Bob Simpson
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+=cut
